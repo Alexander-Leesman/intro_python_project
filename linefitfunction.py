@@ -6,6 +6,9 @@
     #import matplotlib.pyplot as plt
     #from astropy.modeling import models, fitting
 
+#Use chi squared
+#Find reduced chi squared.
+
 def fitline(x,y,dy):
     #Class 
     Fitter = fitting.LinearLSQFitter()
@@ -23,3 +26,12 @@ def fitline(x,y,dy):
     plt.show()
     print(f'slope = {LinearFit.slope.value:3.2f}')
     print(f'intercept = {LinearFit.intercept.value:3.2f}')
+
+    #Uses reduced chi squared to find goodness of fit.
+    observ = y
+    expect = LinearFit(x)
+    chi = 0 
+    for i in range(len(y)):
+        chi += ((observ[i] - expect[i])**2)/(dy[i]**2)
+    chisquared = (chi)/(len(y)-2)
+    print(f"Chi Squared = {chisquared:3.2f}")
