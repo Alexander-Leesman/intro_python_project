@@ -6,6 +6,13 @@
     #import matplotlib.pyplot as plt
     #from astropy.modeling import models, fitting
 
+import numpy as np
+from astropy.io import ascii
+from astropy.table import Table
+import matplotlib.pyplot as plt
+from astropy.modeling import models, fitting
+
+
 #Use chi squared
 #Find reduced chi squared.
 
@@ -34,4 +41,5 @@ def fitline(x,y,dy):
     for i in range(len(y)):
         chi += ((observ[i] - expect[i])**2)/(dy[i]**2)
     chisquared = (chi)/(len(y)-2)
-    print(f"Chi Squared = {chisquared:3.2f}")
+    print(f'Chi Squared = {chisquared:3.2f}')
+    print(f'Degrees of Freedom = {(len(y)-2)}')
