@@ -1,13 +1,17 @@
 #Define a square region with sides of a certain length. In that region define a circle with a radius of your choosing.
 #Monte Carlo Technique
 
-def calculatepi(x):
+import numpy as np
+import matplotlib.pyplot as plt
+import random as rand
+
+def calculatepi(x,n):
     #bounds of the square in both x and y directions
     a = 0
     b = x
     #circle of radius 5, centered at (0,0)
 
-    n = 10000000
+    # n = number of times looped
     pointsinside = 0
     for i in range(n):
         point = (rand.uniform(a,b),rand.uniform(a,b))
