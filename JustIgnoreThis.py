@@ -1,3 +1,5 @@
+# This is the old calculatepifunction.py file. This is here only for reference while making the new one and will be deleted when it is finished.
+
 #Define a square region with sides of a certain length. In that region define a circle with a radius of your choosing.
 #Monte Carlo Technique
 
