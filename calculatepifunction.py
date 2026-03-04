@@ -24,3 +24,10 @@ def approximatepi(radius, n):     # radius of circle radius, number of points n
     approximate_value_of_pi = area/(radius**2)
     return approximate_value_of_pi
 
+# Reduced Chi squared to find the goodness of fit
+# In this case, degrees of freedom = n-1
+# Observed = fit line to the approximate values of pi
+def chisquared(observed):
+    O = observed
+    E = math.pi
+    
