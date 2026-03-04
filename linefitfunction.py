@@ -7,8 +7,6 @@
     #from astropy.modeling import models, fitting
 
 import numpy as np
-from astropy.io import ascii
-from astropy.table import Table
 import matplotlib.pyplot as plt
 from astropy.modeling import models, fitting
 
