@@ -8,12 +8,12 @@ Takes an array of x values, an array of their corresponding noisy y values, and 
 then plots them y vs. x, adds error bars for y, then uses astropy's models and fitting to plot a 1D linear fit to the data.
 
 Parameters:\
-    x = array\
-        x coordinates\
-    y = array\
-        y coordinate\
-    dy = array\
-        error of y\
+>x = array\
+>>x coordinates\
+>y = array\
+>>y coordinate\
+>dy = array\
+>>error of y
     
 Returns:\
     plot of x vs scatter of y with error bars and plot of x vs LinearFit(x)\
@@ -22,4 +22,4 @@ Returns:\
     prints string stating slope\
     prints string stating y-intercept\
     prints string of Chi Squared of LinearFit(x) compared to y\
-    prints string of Degrees of Freedom\
+    prints string of Degrees of Freedom
