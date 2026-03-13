@@ -1,3 +1,5 @@
+# Ignore this file, it doesn't work and will be removed soon.
+
 # calculates pi using the Monte Carlo Method and an increasing number of random points (psudorandom generator)
 # compares it to the value of math.pi
 # Returns plot of approximate values vs number of points, linear fit of the approximations, and reduced chi squared value when compared to pi itself.

@@ -1,5 +1,4 @@
-#Define a square region with sides of a certain length. In that region define a circle with a radius of your choosing.
-#Monte Carlo Technique
+# Restarting the calculatepifunction.py
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -7,78 +6,68 @@ import random as rand
 import math
 from astropy.modeling import models, fitting
 
-def calculatepi(x,n):
-    #bounds of the square in both x and y directions
-    a = 0
-    b = x
-    #circle of radius 5, centered at (0,0)
-    # n = number of times looped
-    pointsinside = 0
-    for i in range(n):
-        point = (rand.uniform(a,b),rand.uniform(a,b))
-        if point[0]**2 + point[1]**2 <= x**2:
-            pointsinside += 1
-    #times 4 since the region is a quarter circle
-    piapprox = (pointsinside/n)*4
+# Monte Carlo method: circle of radius r inside square with side length of 2r. Both are centered at the origin.
+# n number of points plotted between 0 and r (this is a quarter of the square and a quarter of the circle)
+# (points inside the quarter circle/n)*4 = approx. area of the circle
+# approx. area / r**2 = approx. pi
 
-    return piapprox
+def approximate_pi(radius = 1, n):     # radius of circle radius, number of points n
+    # Approximation of the area of the circle via Monte Carlo
+    points_inside = 0
+    for ni in range(n):
+        point = (rand.uniform(0,radius),rand.uniform(0,radius))
+        if point[0]**2 + point[1]**2 <= radius**2:
+            points_inside += 1
+    # times 4 since the region is a quarter circle
+    area = (points_inside/n)*4
+    # approximate value of pi
+    approximate_value_of_pi = area/(radius**2)
+    return approximate_value_of_pi
 
-# Finds an approximate value of pi by using calculatepi function several times.
-# Plots and fits a line to the values.
-# Finds Reduced Chi squared value of those values from math.pi
-def plotpi(R, N):
-    h =  10**N # number of points
-    # Circle of radius R
-    # Calculates an approximation of pi using calculatepi(R,h) 10 times
-    X = []
-    fX = []
-    pi = []
-    for j in range(10):
-        X.append(j+1)
-        pi.append(math.pi)
-        fX.append(calculatepi(R, h))
-    print("X = ",X,"fX = ", fX)
+# Reduced Chi squared to find the goodness of fit
+# In this case, degrees of freedom = n-1
+# Observed = fit line to the approximate values of pi
+# parameter observed is a list/array
+def reduced_chi_sq(observed):
+    O = np.array(observed)
+    E = math.pi
+    # First, needs sample variance
+    sample_variance = np.var(O, ddof=1)    # np array O, degrees of freedom = N - ddof     
+    # Find the Chi-squared:
+    chi_squared = np.sum(((O-E)**2)/(sample_variance))
+    reduced_chi_squared = chi_squared/(len(O)-1)
+    return reduced_chi_squared
+
+# Find how the data converges
+# For the convergence test, you find how many points it takes for it to stop changing (Within x percent of the last estimates)
+# This should be made with the assumption that you do not know the true value. You want to see where it converges to.
+# The question you are trying to answer: How many points do you need for you to confidently say that it has converged?
+# Obviously, 10^15 points would be enough in this case, but that would take a while to compute.
+# I guess the threshold percentage choice is up to me
+# If for x amount of approximations the approximated values do not leave the threshold perentage of the previous value -> has converged
+
+# INPUT: data (list/array), number of points (list/array); Will be used to approximate pi values
+# OUTPUT : the number of points required for the data to converge
+# takes a list/array of data, then checks if successive values have a 10% difference of eachother
+# if 3 successive values are within said percentage, the function returns
 
 
-
-# Finds mean and sample variance of fX
-    mean = sum(fX)/len(fX)
-    print("mean = ",mean)
-    top = 0
-    for st in range(len(fX)):
-        top += (fX[st]-mean)**2
-    bottom = len(fX)-1
-    sampleVariance = top/bottom
-    print("Sample Variance = ",sampleVariance)
-
-# Finds standard error
-# standard error of the mean = sample standard deviation / sqrt(N)
-    SE = []
-    for se in range(len(fX)):
-        SE.append(((sampleVariance)**0.5)/((len(fX))**0.5))
-    print(SE)
-
-# Finds reduced Chi Squared value
-# chi squared = 1/len(fX) * ((sumation of (fXi - pi))**2/(sampleVariance))
-# Comparing values to pi; no fit values
-# reduced chi squared = chi squared / (len(fX) - 0)
-    observ = fX
-    expect = pi
-    chis = 0 
-    for k in range(len(fX)):
-        chis += (observ[k] - expect[k])**2
-    chisquared = (chis)/(sampleVariance)
-    reducedChiSquared = chisquared/len(fX)
-    
-    #print(f'Chi Squared = {chisquared:3.2f}')
-    print(f'Reduced Chi Squared = {reducedChiSquared:3.2f}')
-    print(f'Degrees of Freedom = {(len(fX)-2)}')
-
-    # Plots the list of calculated pi values as blue dots and the true value of pi as a black line.
-    plt.plot(X, fX, 'b.', label = 'Approximations of π')
-    plt.plot(X, pi, 'k-', label = 'π')
-    plt.xlabel("x")
-    plt.ylabel("Value Calculated")
-    plt.errorbar(X, fX, yerr = SE, fmt = 'b.', label = 'Standard Error')
-    plt.legend()
-    plt.show()
+def convergence_check(percent = 10, n = 1):
+    p = percent/100
+    n_value = n # approximate_pi will be calculated with 10**n_value points 
+    pi_values = []
+    pi_values.append(approximate_pi(1, 10**n_value))
+    n_value += 1
+    pi_values.append(approximate_pi(1, 10**n_value))
+    n_value += 1
+    while number_within < 2:
+        pi_values.append(approximate_pi(1, 10**n_value))
+        current_value = pi_values[-1]
+        previous_value1 = pi_values[-2]
+        previous_value2 = pi_values[-3]
+        a = abs(previous_value2 - previous_value1)
+        b = abs(previous_value1 - current_value)
+        if a < (p * previous_value2):
+            if b < (p * previous_value1):
+                return 10**n_value
+        n_value += 1
