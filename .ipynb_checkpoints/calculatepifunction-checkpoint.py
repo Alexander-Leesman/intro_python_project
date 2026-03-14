@@ -11,10 +11,10 @@ from astropy.modeling import models, fitting
 # (points inside the quarter circle/n)*4 = approx. area of the circle
 # approx. area / r**2 = approx. pi
 
-def approximate_pi(radius = 1, n):     # radius of circle radius, number of points n
+def approximate_pi(n, radius = 1):     # radius of circle radius, number of points n
     # Approximation of the area of the circle via Monte Carlo
     points_inside = 0
-    for ni in range(n):
+    for ni in range(int(n)):
         point = (rand.uniform(0,radius),rand.uniform(0,radius))
         if point[0]**2 + point[1]**2 <= radius**2:
             points_inside += 1
@@ -56,18 +56,19 @@ def convergence_check(percent = 10, n = 1):
     p = percent/100
     n_value = n # approximate_pi will be calculated with 10**n_value points 
     pi_values = []
-    pi_values.append(approximate_pi(1, 10**n_value))
-    n_value += 1
-    pi_values.append(approximate_pi(1, 10**n_value))
-    n_value += 1
-    while number_within < 2:
-        pi_values.append(approximate_pi(1, 10**n_value))
+    dlogval = 0.3
+    pi_values.append(approximate_pi(10**n_value, 1))
+    n_value += dlogval
+    pi_values.append(approximate_pi(10**n_value, 1))
+    n_value += dlogval
+    while True:
+        pi_values.append(approximate_pi(10**n_value, 1))
         current_value = pi_values[-1]
         previous_value1 = pi_values[-2]
         previous_value2 = pi_values[-3]
         a = abs(previous_value2 - previous_value1)
         b = abs(previous_value1 - current_value)
-        if a < (p * previous_value2):
-            if b < (p * previous_value1):
-                return 10**n_value
-        n_value += 1
+        if a < (p * previous_value2) and  b < (p * previous_value1):
+            return 10**n_value
+            break 
+        n_value += dlogval
